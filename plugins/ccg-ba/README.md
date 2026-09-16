@@ -53,7 +53,26 @@ the plugin falls back to `~/Documents/Obsidian Vault/projects/ccg`, then a sibli
 [Environment]::SetEnvironmentVariable('CCG_VAULT', 'C:\Users\you\ccg-vault', 'User')
 ```
 
-### 4. Check it works
+### 4. Put `CLAUDE.md` in your source repo
+
+This is what makes Claude use the vault for every question, not just when someone remembers to
+type `/ask`. Copy the template into the root of the repo you work in:
+
+```bash
+cp <ccg-workflow>/plugins/ccg-ba/templates/CLAUDE.md <your-repo>/CLAUDE.md
+```
+
+If the repo already has a `CLAUDE.md`, paste the template's sections into it rather than
+overwriting — you will lose the repo's own conventions otherwise.
+
+It instructs Claude to answer questions about intended behaviour **only** from the vault, and to
+say plainly that the vault does not cover something rather than filling the gap with a guess. It
+also stops Claude treating the current code as the requirement, which is the failure mode that
+quietly turns an old bug into a specification.
+
+Commit it — every developer on the repo should get the same rules.
+
+### 5. Check it works
 
 ```
 /ask what features are specified so far?
@@ -181,6 +200,15 @@ Invoked by the commands; callable directly.
 | `spec-check` | The rubric and omission sweep |
 | `elicit` | 71 structured reasoning methods |
 | `code-review` | Conformance of a diff to a spec |
+
+## Templates
+
+`templates/CLAUDE.md` — drop into a source repo so Claude there answers behaviour questions from
+the vault and never from assumption. See quickstart step 4. The rules in it stand on their own:
+a repo with this file but without the plugin still gets grounded answers, it just searches the
+vault directly instead of through `/ask`.
+
+`skills/spec-write/assets/spec-template.md` — the spec skeleton `/ba-new` starts from.
 
 ---
 
