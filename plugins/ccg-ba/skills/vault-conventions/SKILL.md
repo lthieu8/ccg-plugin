@@ -1,9 +1,8 @@
 ---
 name: vault-conventions
 description: >-
-  Shared rules for locating and reading the CCG vault - folder layout, spec frontmatter, the
-  status lifecycle, acceptance-criteria format, the question store and the precedence order
-  between sources. Load before reading or writing anything in the vault. Use whenever a question
+  Shared rules for locating and reading the CCG vault - folder layout, spec frontmatter,
+  acceptance-criteria format, the question store and the precedence order between sources. Load before reading or writing anything in the vault. Use whenever a question
   touches a feature, spec, business rule, or "what did the BA say about X". Trigger: vault, spec,
   specification, requirement, acceptance criteria, AC-, business rule, glossary, question store,
   what does the doc say, is this specified.
@@ -44,7 +43,6 @@ from a stale clone is worse than no answer, because it carries the same confiden
   reports/             Gap-check output. Disposable.
   notes/glossary.md    Domain vocabulary.
   notes/decisions.md   Cross-cutting answers that outlived one feature.
-  _index.md            Feature list with status.
 ```
 
 ## Precedence between sources
@@ -65,7 +63,6 @@ one is an assumption wearing a citation.
 ```yaml
 ---
 feature: Supplier Evaluation Report
-status: draft | in-review | approved | implemented
 source: "[[00-inbox/supplier-eval-brief.md]]"
 owner: <BA name>
 updated: 2026-09-16
@@ -73,15 +70,9 @@ jira: CCG-1234
 ---
 ```
 
-`status` governs how an answer may be used:
-
-- **draft** — BA still writing. Answers drawn from it are provisional and must say so.
-- **in-review** — checked, findings open. Same caveat.
-- **approved** — validated. **Only `approved` specs are implementable.**
-- **implemented** — shipped, kept for traceability.
-
-Never quote a draft without stating that it is a draft. A developer who builds on a draft answer
-has been misled by the omission, not by the content.
+Anything in the vault is the source of truth. There is no approval gate — if it is written down
+here, it is what the team agreed. `updated:` is what settles conflicts between sources, so keep
+it current.
 
 ## Required spec sections
 

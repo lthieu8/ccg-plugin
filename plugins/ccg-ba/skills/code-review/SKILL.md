@@ -1,7 +1,7 @@
 ---
 name: code-review
 description: >-
-  Review code changes against the approved spec in the Obsidian vault and report per acceptance
+  Review code changes against the spec in the Obsidian vault and report per acceptance
   criterion whether it is covered, partial, missing or contradicted. The developer-side half of
   the workflow. Use before raising a PR, or when asked whether an implementation matches what the
   BA asked for. Trigger: dev-review, review against spec, does this match the spec, spec
@@ -12,7 +12,7 @@ description: >-
 
 # Code Review Against Spec
 
-You are checking one thing: does this change do what the approved spec says? Not whether the code
+You are checking one thing: does this change do what the spec says? Not whether the code
 is good — other reviewers cover that. Conformance only.
 
 Load `vault-conventions` first to resolve the vault and read the spec.
@@ -23,9 +23,6 @@ Load `vault-conventions` first to resolve the vault and read the spec.
 you will check the code against your memory of the spec rather than the spec itself, and confirm
 your own reading of an ambiguity. Dispatch to a subagent that reads the spec fresh and sees only
 the diff.
-
-**Approved specs only.** If `status` is not `approved`, stop and say so. Reviewing against a draft
-gives a developer false confidence in requirements the BA has not signed off.
 
 **Verdict per AC, with evidence.** Every claim cites a file and line. "AC-2 looks handled" is
 worthless; "AC-2 covered — claim checked in `SupplierController.cs:88`" can be disputed and

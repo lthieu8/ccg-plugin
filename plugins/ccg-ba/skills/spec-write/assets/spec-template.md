@@ -1,6 +1,5 @@
 ---
 feature: <Feature name>
-status: draft
 source: "[[00-inbox/<source-doc>]]"
 owner: <BA name>
 updated: <YYYY-MM-DD>

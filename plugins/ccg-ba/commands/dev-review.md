@@ -1,5 +1,5 @@
 ---
-description: Review your changes against the approved spec in the vault, per acceptance criterion
+description: Review your changes against the spec in the vault, per acceptance criterion
 argument-hint: "[spec name; omit to match by branch or ticket]"
 ---
 

@@ -87,6 +87,6 @@ Offer, in this order:
 3. **Re-check** — re-run after edits. The report overwrites in place.
 
 If every finding is low severity and no dimension is thin or broken, say the spec is ready and
-recommend `/ba-approve`. Do not manufacture findings to look thorough — a clean spec that passes
+remind the BA to commit and push the vault. Do not manufacture findings to look thorough — a clean spec that passes
 is a real outcome, and inventing concerns to fill a report destroys the BA's trust in every
 future report.

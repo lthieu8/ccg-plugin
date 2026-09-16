@@ -9,7 +9,7 @@ Target: $ARGUMENTS
 
 Use the `spec-check` skill. Load `vault-conventions` first.
 
-If no target was given, list the specs in `02-specs/` with their status and ask which one.
+If no target was given, list the specs in `02-specs/` and ask which one.
 
 Dispatch the review to a subagent with clean context, per the skill's discipline section — do not
 review inline a spec that was drafted in this session.

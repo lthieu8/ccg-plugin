@@ -19,8 +19,7 @@ Load `vault-conventions` first for paths, frontmatter and the AC format.
 ## Starting a new spec
 
 1. Ask for the feature name and, if there is a source document in `00-inbox/`, read it first.
-2. Create `{vault}/02-specs/<kebab-feature-name>.md` from `assets/spec-template.md` with
-   `status: draft`.
+2. Create `{vault}/02-specs/<kebab-feature-name>.md` from `assets/spec-template.md`.
 3. Work the sections in template order. Do not jump ahead — later sections depend on decisions
    made in earlier ones.
 

@@ -77,7 +77,7 @@ both and answer neither.
 
 > Only suppliers with `IsActive = true` appear in the evaluation dropdown.
 
-Source: `02-specs/supplier-evaluation.md` §Business Rules rule 4 (status: approved, updated 2026-09-12)
+Source: `02-specs/supplier-evaluation.md` §Business Rules rule 4 (updated 2026-09-12)
 ```
 
 Quote the text. Paraphrase alone hides the difference between what it says and what you read into it.

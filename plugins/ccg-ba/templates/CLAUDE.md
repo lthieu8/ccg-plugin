@@ -14,7 +14,7 @@ data. Resolve it in this order: `$CCG_VAULT`, a `.ccg-vault` file in this repo, 
 do not answer from the code instead.
 
 ```
-{vault}/02-specs/       approved specs — what the system must do
+{vault}/02-specs/       specs — what the system must do
 {vault}/01-questions/   questions already asked, answered and open
 {vault}/notes/decisions.md   cross-cutting decisions
 {vault}/notes/glossary.md    domain vocabulary
@@ -48,7 +48,7 @@ exceptions usually sit two paragraphs from the rule.
 
 Then answer in exactly one of three forms:
 
-**Answered** — quote the text and cite the file, section, status and date.
+**Answered** — quote the text and cite the file, section and date.
 
 **Partially specified** — state what is covered and precisely what is not. This is the most common
 real outcome; do not round it up.
@@ -59,12 +59,6 @@ missed a synonym.
 
 Where two sources conflict, later wins: spec body < spec `## Decisions` < a dated question entry <
 `notes/decisions.md`. If dates cannot settle it, report both and answer neither.
-
-## Only approved specs are implementable
-
-A spec's frontmatter carries `status`. Only `approved` is safe to build against. If a spec is
-`draft` or `in-review`, say what the status is instead of answering from it — and if you do quote
-it, label the answer provisional.
 
 ## Before implementing
 
