@@ -41,8 +41,33 @@ Developers clone it:
 git clone https://github.com/lthieu8/ccg-vault.git
 ```
 
-The BA already has it at `Documents/Obsidian Vault/projects/ccg`. Everything is plain markdown —
-Obsidian is the BA's editor, not a requirement for anyone else.
+The BA already has it at `Documents/Obsidian Vault/projects/ccg`.
+
+#### Obsidian — optional
+
+Every file in the vault is plain markdown in a git repo, so the whole workflow runs without
+Obsidian: Claude reads the files, `/ask` searches them, git syncs them. Nothing here depends on
+it, and a developer who never installs it loses nothing.
+
+Install it anyway if you fall into one of these:
+
+- **The BA — recommended.** Writing and editing specs all day is much better in an editor that
+  understands wikilinks, backlinks and frontmatter than in a plain text editor.
+- **Developers — usually skip it.** The point of this setup is that you ask Claude rather than
+  browse. Worth installing only if you actually like reading specs side by side and following
+  `[[links]]` by hand.
+
+Download from [obsidian.md](https://obsidian.md) — it is free for personal and internal work.
+Then **Open folder as vault** and point it at your `ccg-vault` clone (or, for the BA, at the
+existing `Documents/Obsidian Vault`).
+
+The one community plugin worth adding is **Obsidian Git**, set to auto-pull and auto-commit on an
+interval. That is how the BA stays in sync without ever touching the command line — and an answer
+sitting uncommitted on their laptop helps nobody.
+
+> **Caveat for the BA's machine:** the git repo is at `projects/ccg`, not at the vault root, so
+> Obsidian Git — which operates on the vault root — will not see it. Either run git in that
+> subfolder, or open `projects/ccg` as its own vault so the two line up.
 
 ### 3. Tell the plugin where the vault is
 
