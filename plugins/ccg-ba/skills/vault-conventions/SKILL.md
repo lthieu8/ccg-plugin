@@ -1,52 +1,66 @@
 ---
 name: vault-conventions
 description: >-
-  Shared rules for locating and reading the CCG Obsidian vault - folder layout, spec frontmatter,
-  the status lifecycle, acceptance-criteria format, and the decisions log. Load this before
-  reading or writing anything in the vault. Use when asked about a feature, a spec, a business
-  rule, or "what did the BA say about X", and whenever another ccg-ba skill needs vault paths.
-  Trigger: vault, spec, specification, requirement, acceptance criteria, AC-, business rule,
-  glossary, decisions log, what does the doc say, is this specified.
+  Shared rules for locating and reading the CCG vault - folder layout, spec frontmatter, the
+  status lifecycle, acceptance-criteria format, the question store and the precedence order
+  between sources. Load before reading or writing anything in the vault. Use whenever a question
+  touches a feature, spec, business rule, or "what did the BA say about X". Trigger: vault, spec,
+  specification, requirement, acceptance criteria, AC-, business rule, glossary, question store,
+  what does the doc say, is this specified.
 ---
 
 # CCG Vault Conventions
 
-The vault is the single source of truth for what the team is building. Code answers *how*; the
-vault answers *what* and *why*. When they disagree, neither automatically wins — the disagreement
-itself is the finding worth reporting.
+The vault is the retrieval substrate the team asks questions against. It is **not** a wiki people
+browse. A developer asks Claude; Claude answers from the vault or reports that the vault does not
+cover it. Nobody is expected to go looking manually, and no answer is expected to come from
+anywhere else.
+
+That puts the whole burden on grounding. See the `answer` skill for the discipline — the summary
+is: everything you assert comes from a file you can cite, and everything else is **NOT SPECIFIED**.
 
 ## Locating the vault
 
 Resolve in this order and stop at the first hit:
 
 1. `$CCG_VAULT` environment variable.
-2. A `.ccg-vault` file in the current project root whose single line is the vault path.
+2. A `.ccg-vault` file in the project root whose single line is the vault path.
 3. `~/Documents/Obsidian Vault/projects/ccg`
 4. A sibling clone: `../ccg-vault`
 
-If none resolve, stop and ask the user for the path rather than guessing. Never create the vault
-structure implicitly — a missing vault means a misconfigured machine, not a new project.
+If none resolve, stop and ask. Never create the structure implicitly — a missing vault means a
+misconfigured machine, not a new project. Referred to below as `{vault}`.
 
-Refer to the resolved path as `{vault}` below.
+Pull before answering if the vault is a git clone (`git -C {vault} pull --ff-only`). An answer
+from a stale clone is worse than no answer, because it carries the same confidence.
 
 ## Layout
 
 ```
 {vault}/
-  00-inbox/            BA's source documents, as delivered. Read-only. Never edited by anyone.
-  02-specs/            Approved, validated specs. THE source of truth for developers.
-  reports/             Validation reports from /ba-check. Disposable, regenerated on demand.
-  notes/glossary.md    Domain vocabulary. One definition per term.
-  notes/decisions.md   Cross-cutting Q&A that outlived a single feature.
-  _index.md            Feature list with current status.
+  00-inbox/            BA source documents, as delivered. Read-only.
+  01-questions/        Q&A store, one file per feature. Answered and open questions.
+  02-specs/            Validated specs. The primary source of truth.
+  reports/             Gap-check output. Disposable.
+  notes/glossary.md    Domain vocabulary.
+  notes/decisions.md   Cross-cutting answers that outlived one feature.
+  _index.md            Feature list with status.
 ```
 
-There is deliberately no `01-questions/` folder — clarification happens in-session through
-elicitation, and its conclusions land in the spec itself.
+## Precedence between sources
+
+When two sources address the same question, the later one in this list wins, and you say which
+you used:
+
+1. Spec body (`02-specs/`)
+2. Spec `## Decisions` section — later by construction
+3. `01-questions/` entry marked answered, if dated after the spec's `updated:`
+4. `notes/decisions.md` for cross-cutting rules
+
+If two sources conflict and dates cannot settle it, **report both and answer neither**. Picking
+one is an assumption wearing a citation.
 
 ## Spec frontmatter
-
-Every file in `02-specs/` opens with:
 
 ```yaml
 ---
@@ -59,65 +73,61 @@ jira: CCG-1234
 ---
 ```
 
-`status` drives the whole workflow:
+`status` governs how an answer may be used:
 
-- **draft** — BA is still writing. Developers do not read it.
-- **in-review** — `/ba-check` has run and findings are open.
-- **approved** — validated, gaps closed, safe to build against. **Only `approved` specs are implementable.**
-- **implemented** — shipped; kept for traceability.
+- **draft** — BA still writing. Answers drawn from it are provisional and must say so.
+- **in-review** — checked, findings open. Same caveat.
+- **approved** — validated. **Only `approved` specs are implementable.**
+- **implemented** — shipped, kept for traceability.
 
-If a developer asks about a spec that is not `approved`, say so plainly and name the current
-status instead of answering from a draft. A draft answer that turns out to be wrong costs more
-than the wait.
+Never quote a draft without stating that it is a draft. A developer who builds on a draft answer
+has been misled by the omission, not by the content.
 
 ## Required spec sections
 
 ```markdown
-## Context            Why this exists. One paragraph.
-## Scope              What is in. Bullet list.
-## Non-Goals          What is deliberately out. Bullet list. Absent = suspicious.
-## Business Rules     Numbered. Each one testable.
+## Context            Why this exists.
+## Scope              What is in.
+## Non-Goals          What is deliberately out. Absent is suspicious.
+## Business Rules     Numbered. Each testable.
 ## Acceptance Criteria
-## Open Questions     Genuinely unanswered. Empty is fine; missing is not.
-## Decisions          Append-only Q&A log.
+## Open Questions     Genuinely unanswered.
+## Decisions          Append-only Q&A.
 ```
 
 ## Acceptance criteria format
 
-Numbered, stable IDs, one testable statement each. These are the contract `/dev-review` checks
-code against, so vagueness here is what makes the whole loop useless.
+Numbered, stable `AC-n` IDs, one testable statement each — a nameable input and an observable
+outcome. These are the contract `/dev-review` checks code against.
 
 ```markdown
 - AC-1: A supplier with no completed evaluations shows "Not evaluated", not a score of 0.
 - AC-2: Only users holding the SupplierReview claim can submit an evaluation.
-- AC-3: Soft-deleted suppliers are excluded from the evaluation report.
 ```
 
-An AC is well-formed when you can name the input and the observable outcome. "The report should
-be fast" is not an AC; "the report returns within 3s for 5000 suppliers" is. IDs are permanent —
-when an AC is withdrawn, mark it `~~AC-4 (withdrawn 2026-09-16)~~` rather than renumbering, or
-every PR description that cites an AC number silently starts lying.
+IDs are permanent. Withdraw with `~~AC-4 (withdrawn 2026-09-16)~~` rather than renumbering —
+renumbering silently invalidates every PR description and review that cited the old number.
 
-## The decisions log
+## The question store
 
-This is what stops developers interrupting the BA with the same question twice. Every answered
-question gets appended, never edited:
+`01-questions/<feature>.md` holds every question asked about that feature, answered or not. This
+is what makes the second developer's question free.
 
 ```markdown
-## Decisions
-- **Q:** Do inactive suppliers appear in the dropdown? **A:** No. — BA, 2026-09-14
-- **Q:** Score rounding, up or nearest? **A:** Nearest, 2 dp. — BA, 2026-09-15
+### Q: Do inactive suppliers appear in the evaluation dropdown?
+- **Status:** answered
+- **A:** No. Only suppliers with `IsActive = true`.
+- **Answered by:** Hieu (BA), 2026-09-14
+- **Relates to:** [[02-specs/supplier-evaluation#AC-2]]
+
+### Q: What rounding applies to the aggregate score?
+- **Status:** open
+- **Asked by:** Nam (dev), 2026-09-16 — blocking
+- **Needed for:** [[02-specs/supplier-evaluation#AC-7]]
 ```
 
-**Before telling a developer to ask the BA anything, search `02-specs/` and `notes/` first.**
-Most questions have already been answered once. When you do answer from the log, cite the entry
-so the developer can judge how stale it is.
+Entries are **append-only**. When an answer changes, add a new entry that supersedes the old one
+and say so. Overwriting destroys the record of why the earlier code was written the way it was.
 
-## Reading the vault
-
-Specs are plain markdown, so ordinary file tools work — no Obsidian required. Use `grep -ri`
-across `{vault}/02-specs` and `{vault}/notes` for a term before concluding something is
-unspecified. Wikilinks (`[[glossary#Evaluation Cycle]]`) resolve to files under `{vault}`.
-
-Say "the spec does not cover this" only after searching the glossary and decisions log as well.
-Unspecified and not-yet-found are very different findings, and only one of them is the BA's problem.
+An open entry is not a failure — it is the mechanism working. A question the BA has not answered
+is exactly the thing that should be visible and queued, rather than guessed at.
