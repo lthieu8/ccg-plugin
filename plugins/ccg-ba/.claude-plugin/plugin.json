@@ -1,0 +1,9 @@
+{
+  "name": "ccg-ba",
+  "version": "0.1.0",
+  "description": "Turns a BA's finished document into a validated, gap-checked spec in the shared Obsidian vault, then lets developers review code against it. Adapted from BMAD-METHOD (MIT).",
+  "author": {
+    "name": "CCG Team"
+  },
+  "keywords": ["business-analysis", "requirements", "specification", "obsidian", "code-review"]
+}

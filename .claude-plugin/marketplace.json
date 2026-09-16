@@ -1,0 +1,17 @@
+{
+  "name": "ccg-workflow",
+  "owner": {
+    "name": "CCG Team"
+  },
+  "metadata": {
+    "description": "CCG internal Claude Code plugins for the BA -> dev specification workflow.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "ccg-ba",
+      "source": "./plugins/ccg-ba",
+      "description": "BA specification authoring, gap validation and elicitation backed by an Obsidian vault, plus a dev-side code review against the approved spec."
+    }
+  ]
+}
