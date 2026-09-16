@@ -51,8 +51,8 @@ set to auto-pull and auto-commit so they never touch the CLI.
 |---|---|---|
 | `/ask <question>` | dev | Answers from the vault with a citation, or **NOT SPECIFIED** and queues the question |
 | `/dev-review [spec]` | dev | Checks your diff against the spec's acceptance criteria, one verdict each |
-| `/ba-new [feature]` | BA | Starts a spec and interviews you through it, one decision at a time |
-| `/ba-check [spec]` | BA | Reports what the spec is missing, ambiguous about, or cannot test |
+| `/ba-intake [doc]` | BA | **The one to remember.** Reads a doc from the inbox, asks every unclear question in one batch, writes the spec with `AC-n` criteria |
+| `/ba-check [spec]` | BA | Re-checks an existing spec after edits |
 | `/ba-elicit [section]` | BA | Pressure-tests a weak section with structured reasoning methods |
 | `/ba-answer [feature]` | BA | Works through the questions developers have queued |
 
@@ -62,8 +62,8 @@ set to auto-pull and auto-commit so they never touch the CLI.
 |---|---|
 | `vault-conventions` | Vault paths, frontmatter, AC format, source precedence. Loaded by the others. |
 | `answer` | Grounded answering — cite the vault or say NOT SPECIFIED, never infer |
-| `spec-write` | Draft or complete a spec by interview |
-| `spec-check` | Quality rubric (5 dimensions) plus an omission sweep over 16 categories requirements go missing from |
+| `intake` | Inbox doc to finished spec in one pass — analyse, ask, write |
+| `spec-check` | Quality rubric (5 dimensions) plus an omission sweep over 16 categories requirements go missing from. Used by `intake`. |
 | `elicit` | 71 structured reasoning methods — pre-mortem, inversion, Socratic, assumption audit |
 | `code-review` | Conformance of a diff to a spec, per `AC-n` |
 
@@ -96,38 +96,36 @@ build on it either way.
 
 ## First document, end to end
 
-The BA has finished a requirements document. About thirty minutes from here to a spec developers
-can build from.
+The BA has finished a requirements document. Two steps.
 
-**1. Drop it in** — copy the document to `{vault}/00-inbox/supplier-eval-brief.md`.
+**1. Copy it into `{vault}/00-inbox/`.**
 
-**2. Check it**
-
-```
-/ba-check supplier-eval-brief
-```
-
-Claude reads it in a clean subagent and reports two passes. The **rubric** judges what was written
-— untestable criteria, missing non-goals, adjectives where numbers belong. The **omission sweep**
-finds what was never written: existing data and migration, permissions, lifecycle states,
-deletion, concurrency, audit, localisation, rounding, rollout and more. The sweep is what catches
-*"you never said what happens to the two years of evaluations already in the system"* — a rubric
-structurally cannot, because nothing in the document is wrong.
-
-**3. Work the findings.** Answer what you can directly. For anything you know is thin but cannot
-articulate:
+**2. Run one command.**
 
 ```
-/ba-elicit the scoring section
+/ba-intake supplier-eval-brief
 ```
 
-**4. Write the spec** — `/ba-new` turns the corrected document into `02-specs/supplier-evaluation.md`
-with numbered, testable `AC-n` criteria. Re-run `/ba-check` until it is clean.
+That is the whole BA workflow. Claude then, on its own:
 
-**5. Publish** — commit and push the vault. Everything in it is source of truth; there is no
-approval gate.
+- reads the document, the glossary, and any existing spec that touches the same entities —
+  flagging early if this feature changes behaviour another spec already defines;
+- analyses it in a clean subagent against a **quality rubric** (untestable criteria, missing
+  non-goals, adjectives where numbers belong) and an **omission sweep** over sixteen categories
+  requirements go missing from — existing data and migration, permissions, lifecycle, deletion,
+  concurrency, audit, localisation, rounding, rollout and the rest. The sweep is what catches
+  *"you never said what happens to the two years of evaluations already in the system"*, which a
+  rubric structurally cannot, because nothing in the document is wrong;
+- asks you **every** unclear question in one numbered batch — closed questions with a recommended
+  default, grouped by area, each marked blocking or not. Twenty minutes of your time, not a day of
+  back-and-forth;
+- writes `02-specs/supplier-evaluation.md` with numbered, testable `AC-n` criteria, puts anything
+  still unanswered in Open Questions rather than guessing, and pushes the vault.
 
-**6. Developers take over.** They `/ask` instead of messaging you. Whatever Claude cannot answer
+Optional from there: `/ba-elicit <section>` for a deeper pass on something you know is thin, and
+`/ba-check` to re-validate after later edits.
+
+**Then developers take over.** They `/ask` instead of messaging you. Whatever Claude cannot answer
 is queued in `01-questions/`, and you clear it with `/ba-answer`. Before raising a PR they run
 `/dev-review`, which reports covered / partial / missing / contradicted per `AC-n` with file:line
 evidence.

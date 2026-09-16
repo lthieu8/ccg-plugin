@@ -83,6 +83,6 @@ the CCG domain — a warehouse supervisor, a finance controller, an auditor — 
 
 ## Closing
 
-On **Proceed**, hand the enhanced version back. If the caller was `spec-check` or `spec-write`,
+On **Proceed**, hand the enhanced version back. If the caller was `spec-check` or `intake`,
 resume where it paused. If anything shown was never explicitly accepted, confirm what carries
 over before returning — silent carry-over is how unreviewed text ends up in the spec.

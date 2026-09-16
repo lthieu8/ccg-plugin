@@ -6,7 +6,7 @@ description: >-
   requirement categories BAs habitually forget. Use when a BA has written a document and wants
   to know what they left out, before developers see it. Trigger: check my spec, validate spec,
   review the requirements, what did I miss, is this complete, gap analysis, ba-check, spec
-  quality, is this ready for dev. Do NOT use to write a spec (use spec-write) or to review code
+  quality, is this ready for dev. Do NOT use to write a spec (use intake) or to review code
   (use code-review).
 ---
 
