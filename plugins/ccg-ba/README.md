@@ -60,11 +60,11 @@ set to auto-pull and auto-commit so they never touch the CLI.
 
 | Skill | Does |
 |---|---|
-| `vault-conventions` | Vault paths, frontmatter, AC format, source precedence. Loaded by the others. |
+| `vault-conventions` | The house rules every other skill reads first: where the vault lives, how a spec file is laid out, and which document wins when two of them say different things. Nobody calls this directly. |
 | `answer` | Grounded answering — cite the vault or say NOT SPECIFIED, never infer |
 | `intake` | Inbox doc to finished spec in one pass — analyse, ask, write |
-| `spec-check` | Quality rubric (5 dimensions) plus an omission sweep over 16 categories requirements go missing from. Used by `intake`. |
-| `elicit` | 71 structured reasoning methods — pre-mortem, inversion, Socratic, assumption audit |
+| `spec-check` | Reads a spec and tells you what is wrong or missing in it. Two passes: one judges what *was* written (rules too vague to test, "fast" where a number belongs), the other hunts for whole topics nobody mentioned at all — what happens to data already in the system, who is allowed to do this, what a delete does to history. Used by `intake`. |
+| `elicit` | For when you know a section is weak but cannot say why. Attacks it from a named angle — *assume this shipped and failed six months on, what went wrong?*, *what would guarantee this fails?*, *what are we quietly assuming?* — and shows you what it turned up. 71 such angles to choose from. |
 | `code-review` | Conformance of a diff to a spec, per `AC-n` |
 
 ---
