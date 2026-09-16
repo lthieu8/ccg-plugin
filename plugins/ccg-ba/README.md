@@ -24,21 +24,31 @@ Adapted from [BMAD-METHOD](https://github.com/bmad-code-org/BMAD-METHOD) (MIT) �
 git clone https://github.com/lthieu8/ccg-vault.git
 ```
 
-**3. Point the plugin at it** — set `CCG_VAULT`, or drop a `.ccg-vault` file holding the path in
+**3. Clone the team wiki** — the Azure DevOps wiki is a git repo, and Claude treats it as a
+second source with equal authority to the vault:
+
+```bash
+git clone "https://dev.azure.com/CCGDevTeam/CCG%20SAAS/_git/CCG-SAAS.wiki" ccg-wiki
+```
+
+Set `CCG_WIKI` to that path if you put it anywhere other than `~/Downloads/Project/ccg-wiki`.
+It is read-only to the plugin — nothing this workflow produces is ever written back to it.
+
+**4. Point the plugin at the vault** — set `CCG_VAULT`, or drop a `.ccg-vault` file holding the path in
 your repo root:
 
 ```powershell
 [Environment]::SetEnvironmentVariable('CCG_VAULT', 'C:\Users\you\ccg-vault', 'User')
 ```
 
-**4. Copy `CLAUDE.md` into your source repo** — this is what applies the rules to every question,
+**5. Copy `CLAUDE.md` into your source repo** — this is what applies the rules to every question,
 not just the ones prefixed with `/ask`. Paste the sections in if the repo already has one.
 
 ```bash
 cp <plugin>/templates/CLAUDE.md <your-repo>/CLAUDE.md
 ```
 
-**5. Obsidian — optional.** The vault is plain markdown in git, so nothing depends on it.
+**6. Obsidian — optional.** The vault is plain markdown in git, so nothing depends on it.
 Recommended for the BA (wikilinks, backlinks, frontmatter); developers can skip it, since the
 point is to ask rather than browse. If the BA uses it, add the **Obsidian Git** community plugin
 set to auto-pull and auto-commit so they never touch the CLI.
@@ -61,7 +71,7 @@ set to auto-pull and auto-commit so they never touch the CLI.
 | Skill | Does |
 |---|---|
 | `vault-conventions` | The house rules every other skill reads first: where the vault lives, how a spec file is laid out, and which document wins when two of them say different things. Nobody calls this directly. |
-| `answer` | Grounded answering — cite the vault or say NOT SPECIFIED, never infer |
+| `answer` | Grounded answering — searches the vault and the team wiki, cites whichever it used with its date, or says NOT SPECIFIED. Never infers. |
 | `intake` | Inbox doc to finished spec in one pass — analyse, ask, write |
 | `spec-check` | Reads a spec and tells you what is wrong or missing in it. Two passes: one judges what *was* written (rules too vague to test, "fast" where a number belongs), the other hunts for whole topics nobody mentioned at all — what happens to data already in the system, who is allowed to do this, what a delete does to history. Used by `intake`. |
 | `elicit` | For when you know a section is weak but cannot say why. Attacks it from a named angle — *assume this shipped and failed six months on, what went wrong?*, *what would guarantee this fails?*, *what are we quietly assuming?* — and shows you what it turned up. 71 such angles to choose from. |
@@ -132,6 +142,18 @@ evidence.
 
 ---
 
+## Two sources, one answer
+
+Claude searches both the vault and the Azure DevOps wiki, and they carry **equal authority**.
+Where they disagree, the more recent wins — dated from a spec's `updated:` field, or from a wiki
+page's last commit. Every answer names its source and date, and wiki pages are cited as wiki so
+you can tell a reviewed spec from a wiki page at a glance.
+
+When the dates are too close to call, Claude reports both rather than picking. A vault/wiki
+conflict is worth knowing about on its own — it usually means one of the two was never updated.
+
+---
+
 ## Limits
 
 - **`/ask` is only as complete as the vault.** NOT SPECIFIED means the vault does not cover it,
@@ -140,5 +162,7 @@ evidence.
   behaviour. On the BA machine that is by design; give it a repo and it does better.
 - **`/dev-review` checks conformance, not correctness.** Code can satisfy every criterion and
   still be wrong. Tests and ordinary review still apply.
+- **The wiki is only as current as the team keeps it.** Equal authority means a stale wiki page
+  can outrank nothing, but it can still be cited — dated, so you can judge it.
 - **The loop only closes if queued questions get answered.** If `01-questions/` fills with open
   entries nobody clears, developers learn that asking returns nothing and go back to Slack.

@@ -33,6 +33,21 @@ misconfigured machine, not a new project. Referred to below as `{vault}`.
 Pull before answering if the vault is a git clone (`git -C {vault} pull --ff-only`). An answer
 from a stale clone is worse than no answer, because it carries the same confidence.
 
+## Locating the wiki
+
+The team's Azure DevOps wiki is a second corpus with **equal authority** to the vault. Resolve:
+
+1. `$CCG_WIKI` environment variable.
+2. `~/Downloads/Project/ccg-wiki`
+3. A sibling clone: `../ccg-wiki`
+
+It is a git clone of `dev.azure.com/CCGDevTeam/CCG SAAS/_git/CCG-SAAS.wiki`, branch `wikiMaster`.
+Pull it before answering too. If it does not resolve, say so once and carry on with the vault
+alone — a missing wiki narrows what you can answer, it does not stop you.
+
+Referred to below as `{wiki}`. It is **read-only**: never write to it, never push. It is the
+team's shared wiki, not this workflow's storage. Anything this workflow produces goes in the vault.
+
 ## Layout
 
 ```
@@ -43,20 +58,32 @@ from a stale clone is worse than no answer, because it carries the same confiden
   reports/             Gap-check output. Disposable.
   notes/glossary.md    Domain vocabulary.
   notes/decisions.md   Cross-cutting answers that outlived one feature.
+
+{wiki}/                Azure DevOps wiki, flat markdown. Definitions, epics, permission
+                       matrix, reports. Read-only. Filenames URL-encode punctuation:
+                       `%2D` is a hyphen, `%3A` a colon.
 ```
 
 ## Precedence between sources
 
-When two sources address the same question, the later one in this list wins, and you say which
-you used:
+Vault and wiki carry equal authority. **Where two sources disagree, the more recent one wins** —
+and you always say which you used and its date, so the reader can judge for themselves.
 
-1. Spec body (`02-specs/`)
-2. Spec `## Decisions` section — later by construction
-3. `01-questions/` entry marked answered, if dated after the spec's `updated:`
-4. `notes/decisions.md` for cross-cutting rules
+Dating a source:
 
-If two sources conflict and dates cannot settle it, **report both and answer neither**. Picking
-one is an assumption wearing a citation.
+- Vault specs — the `updated:` field in frontmatter.
+- Vault question entries and decisions — the date on the entry.
+- Wiki pages — the last commit that touched the file:
+  `git -C {wiki} log -1 --format=%ad --date=short -- "<file>"`
+
+Within a single vault spec the later section still wins: spec body < `## Decisions`.
+
+If two sources conflict and the dates are equal, ambiguous, or close enough that the ordering
+looks accidental, **report both and answer neither**. Picking one is an assumption wearing a
+citation, and a confident wrong answer costs more than an honest conflict.
+
+A conflict between a wiki page and a vault spec is itself worth surfacing — it usually means one
+of them was never updated, and the BA needs to know which.
 
 ## Spec frontmatter
 

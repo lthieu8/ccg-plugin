@@ -13,12 +13,19 @@ data. Resolve it in this order: `$CCG_VAULT`, a `.ccg-vault` file in this repo, 
 `~/Documents/Obsidian Vault/projects/ccg`, then `../ccg-vault`. If none resolve, say so and stop —
 do not answer from the code instead.
 
+The team's Azure DevOps wiki is a second corpus with equal authority: `$CCG_WIKI`, else
+`~/Downloads/Project/ccg-wiki`, else `../ccg-wiki`. Read-only — never write or push to it.
+
 ```
 {vault}/02-specs/       specs — what the system must do
 {vault}/01-questions/   questions already asked, answered and open
 {vault}/notes/decisions.md   cross-cutting decisions
 {vault}/notes/glossary.md    domain vocabulary
+{wiki}/                 Azure DevOps wiki — definitions, epics, permission matrix
 ```
+
+Pull both before answering. Wiki filenames URL-encode punctuation (`%2D` hyphen, `%3A` colon), so
+search content rather than filenames.
 
 ## Never answer a behaviour question from assumption
 
@@ -42,8 +49,8 @@ Do not derive a requirement from any of these. Each one feels like knowledge and
 
 ## How to answer
 
-Search `02-specs/`, `01-questions/`, `notes/decisions.md` and `notes/glossary.md` — all four, with
-synonyms of the key terms — before concluding anything. Read matched files in full; a rule's
+Search `02-specs/`, `01-questions/`, `notes/decisions.md`, `notes/glossary.md` **and the wiki** —
+all of them, with synonyms of the key terms — before concluding anything. Read matched files in full; a rule's
 exceptions usually sit two paragraphs from the rule.
 
 Then answer in exactly one of three forms:
@@ -57,8 +64,10 @@ real outcome; do not round it up.
 `{vault}/01-questions/<feature>.md`. Saying what you searched lets the developer judge whether you
 missed a synonym.
 
-Where two sources conflict, later wins: spec body < spec `## Decisions` < a dated question entry <
-`notes/decisions.md`. If dates cannot settle it, report both and answer neither.
+Vault and wiki carry equal authority; where two conflict, **the more recent wins**. Date a wiki
+page from its last commit (`git -C {wiki} log -1 --format=%ad --date=short -- "<file>"`). Cite wiki
+pages as wiki, not as specs. If dates cannot settle it, report both and answer neither — a
+vault/wiki conflict usually means one of them was never updated.
 
 ## Before implementing
 

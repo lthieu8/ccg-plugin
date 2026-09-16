@@ -37,6 +37,10 @@ Read the source document in full. Then read, because they change what counts as 
   another spec already defines, that is the most important thing you will find.** Say so early;
   do not let it surface after the spec is written.
 - `notes/decisions.md` for cross-cutting rules that already constrain this.
+- The wiki (`{wiki}`) for entity definitions and epics covering the same ground. Its Definitions
+  & Terms page fixes the domain vocabulary — a term defined there is not an ambiguity, and a
+  lifecycle an epic already describes is not yours to redefine. **If the document contradicts the
+  wiki, that is a question for the BA, not something to resolve yourself.**
 
 If no document was given, skip to step 3 and interview from scratch.
 

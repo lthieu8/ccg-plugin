@@ -51,11 +51,16 @@ When you catch yourself reaching for any of these, that is the signal to return 
 
 ### 1. Search before concluding anything
 
-Search all four sources — a question often lands in a different one than expected:
+Pull both corpora, then search all of them — a question often lands somewhere other than where
+you expect:
 
 ```bash
-grep -ril "<term>" {vault}/02-specs {vault}/01-questions {vault}/notes
+git -C {vault} pull --ff-only; git -C {wiki} pull --ff-only
+grep -ril "<term>" {vault}/02-specs {vault}/01-questions {vault}/notes {wiki}
 ```
+
+Wiki filenames URL-encode punctuation (`%2D` for a hyphen, `%3A` for a colon), so match on
+content, not on filenames.
 
 Search the glossary term *and* its synonyms. "Not specified" after one narrow grep is a search
 failure reported as a finding, which sends the BA hunting for something they already wrote.
@@ -64,9 +69,11 @@ Read matched files in full. A rule's exceptions usually live two paragraphs from
 
 ### 2. Apply precedence
 
-Per `vault-conventions`: spec body < spec Decisions < dated question entry < `notes/decisions.md`.
-State which source you used and its date. If sources conflict and dates do not settle it, report
-both and answer neither.
+Per `vault-conventions`: vault and wiki carry equal authority, and the more recent source wins.
+Date wiki pages from their last commit
+(`git -C {wiki} log -1 --format=%ad --date=short -- "<file>"`). Always state which source you used
+and its date. If dates are equal, ambiguous or suspiciously close, report both and answer neither
+— and say a vault/wiki conflict exists, since it usually means one was never updated.
 
 ### 3. Answer in one of three forms
 
@@ -78,6 +85,12 @@ both and answer neither.
 > Only suppliers with `IsActive = true` appear in the evaluation dropdown.
 
 Source: `02-specs/supplier-evaluation.md` §Business Rules rule 4 (updated 2026-09-12)
+
+Cite a wiki page as wiki, so the reader knows it is not a reviewed spec:
+
+```
+Source: wiki — `eProcurement — Definitions & Terms` §2 (last updated 2026-09-03)
+```
 ```
 
 Quote the text. Paraphrase alone hides the difference between what it says and what you read into it.
@@ -101,7 +114,7 @@ Partial is the most common real outcome. Resist rounding it up to Answered.
 **NOT SPECIFIED.** The vault does not say what rounding applies to aggregate scores.
 
 Searched: `02-specs/supplier-evaluation.md`, `01-questions/supplier-evaluation.md`,
-`notes/decisions.md`, `notes/glossary.md` for: rounding, precision, decimal, score.
+`notes/decisions.md`, `notes/glossary.md` and the wiki for: rounding, precision, decimal, score.
 
 This needs the BA. Shall I queue it?
 ```
